@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <style>
+    body {
+      margin: 8px;
+      padding: 8px;
+      font-family: Arial, sans-serif;
+    }
+    .heading {
+      display: flex;
+      justify-content: start;
+      font-size: 38px;
+    }
+    .input {
+      height: 28px;
+      width: 100%;
+      font-size: 17px;
+      border: 1px solid black;
+    }
+    .add {
+      padding: 8px;
+      width: 100px;
+      font-size: 15px;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+     
+      
+    }
+    .js-duedate {
+      height: 28px;
+      font-size: 17px;
+      border: 1px solid black;
+      width: 100%;
+    }
+    .todo-input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .js-todo-list {
+      margin-top: 20px;
+    }
+    .todo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .todo-grid button {
+      padding: 8px;
+      font-size: 15px;
+      background-color: darkred;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100px;
+     
+    }
+    .todo-grid span {
+      font-size: 20px;
+    }
+    @media (max-width: 600px) {
+      .heading {
+        font-size: 28px;
+      }
+      .todo-input-grid {
+        grid-template-columns: 1fr;
+      }
+      .todo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="heading">Todo List</h1>
+  <div class="todo-input-grid">
+    <input class="input" placeholder="Enter your task">
+    <input class="js-duedate" type="date">
+    <button onclick="addTodo();" class="add">Add</button>
+  </div>
+  <div class="js-todo-list"></div>
+
+  <script>
+    
+    const todo = JSON.parse(localStorage.getItem('todoList')) || [];
+    
+    function renderToDoList() {
+      let todoListHTML = '';
+      for (let i = 0; i < todo.length; i++) {
+        const todoItem = todo[i];
+        const todoElement = todoItem.todoElement;
+        const dueDate = todoItem.dueDate;
+
+        const html = `<div class="todo-grid">
+          <span>${todoElement}</span>
+          <span>${dueDate}</span>
+          <button onclick="removeTodoItem(${i});">Delete</button>
+        </div>`;
+
+        todoListHTML += html;
+      }
+      document.querySelector('.js-todo-list').innerHTML = todoListHTML;
+    }
+
+    function addTodo() {
+      const inputElement = document.querySelector('.input');
+      const todoElement = inputElement.value;
+      const dueDateElement = document.querySelector('.js-duedate');
+      const dueDate = dueDateElement.value;
+
+      if (todoElement && dueDate) {
+        todo.push({
+          todoElement: todoElement,
+          dueDate: dueDate,
+        });
+
+       
+        localStorage.setItem('todoList', JSON.stringify(todo));
+
+        inputElement.value = '';
+        dueDateElement.value = '';
+        renderToDoList();
+      }
+    }
+
+   
+    function removeTodoItem(index) {
+      todo.splice(index, 1);
+
+   
+      localStorage.setItem('todoList', JSON.stringify(todo));
+
+      renderToDoList();
+    }
+
+
+    renderToDoList();
+  </script>
+</body>
+</html>
